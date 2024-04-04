@@ -1,0 +1,61 @@
+#include <iostream> // Standard Input/Output Stream Library
+#include <vector> // Vector Library
+#include <chrono> // Chrono Library for Time Measurement
+#include <omp.h> // OpenMP Library for Multithreading
+
+using namespace std; // Standard Namespace
+using namespace std::chrono; // Chrono Namespace
+
+// Function to partition the array and return the pivot index
+int partition(vector<int> &arr, int low, int high) {
+    int pivot = arr[high];
+    int i = (low - 1);
+
+    // Partitioning the array
+    for (int j = low; j <= high - 1; j++) {
+        if (arr[j] < pivot) {
+            i++;
+            swap(arr[i], arr[j]); // Swap elements
+        }
+    }
+    swap(arr[i + 1], arr[high]); // Swap elements
+    return (i + 1); // Return the pivot index
+}
+
+// Function to perform QuickSort algorithm
+void quickSort(vector<int> &arr, int low, int high) {
+    if (low < high) {
+        int pi = partition(arr, low, high);
+
+        #pragma omp parallel sections // OpenMP pragma to create parallel sections
+        {
+            #pragma omp section // First parallel section
+            quickSort(arr, low, pi - 1); // Sort left subarray recursively
+
+            #pragma omp section // Second parallel section
+            quickSort(arr, pi + 1, high); // Sort right subarray recursively
+        }
+    }
+}
+
+int main() {
+    int n = 1000000; // Size of the array
+    vector<int> arr(n); // Declare and initialize the vector
+
+    // Fill the array with random values
+    for (int i = 0; i < n; i++) {
+        arr[i] = rand() % n;
+    }
+
+    auto start = high_resolution_clock::now(); // Start the timer
+
+    quickSort(arr, 0, n - 1); // Perform QuickSort
+
+    auto stop = high_resolution_clock::now(); // Stop the timer
+    auto duration = duration_cast<microseconds>(stop - start); // Calculate the execution time
+
+    // Output the parallel execution time
+    cout << "Parallel Execution Time: " << duration.count() << " microseconds" << endl;
+
+    return 0;
+}
