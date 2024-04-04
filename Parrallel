@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#include <cstdlib>
 #include <omp.h>
 
 using namespace std;
@@ -8,8 +9,11 @@ using namespace std::chrono;
 
 // Function to partition the array and return the pivot index
 int partition(vector<int> &arr, int low, int high) {
-    int mid = low + (high - low) / 2; // Calculate the middle index
-    int pivot = arr[mid]; // Choose the middle element as pivot
+    // Select a random pivot index
+    int randomIndex = low + rand() % (high - low + 1);
+    swap(arr[randomIndex], arr[high]);
+
+    int pivot = arr[high]; // Choose the last element as pivot
     int i = low - 1;
 
     for (int j = low; j <= high - 1; j++) {
@@ -22,7 +26,7 @@ int partition(vector<int> &arr, int low, int high) {
     return (i + 1);
 }
 
-// Function to perform QuickSort algorithm
+// Function to perform parallel QuickSort algorithm
 void quickSort(vector<int> &arr, int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
