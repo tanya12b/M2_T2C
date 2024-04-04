@@ -1,23 +1,24 @@
-#include <iostream> // Standard Input/Output Stream Library
-#include <vector> // Vector Library
-#include <chrono> // Chrono Library for Time Measurement
+#include <iostream>
+#include <vector>
+#include <chrono>
 
-using namespace std; // Standard Namespace
-using namespace std::chrono; // Chrono Namespace
+using namespace std;
+using namespace std::chrono;
 
 // Function to partition the array and return the pivot index
 int partition(vector<int> &arr, int low, int high) {
-    int pivot = arr[high];
-    int i = (low - 1);
+    int mid = low + (high - low) / 2; // Calculate the middle index
+    int pivot = arr[mid]; // Choose the middle element as pivot
+    int i = low - 1;
 
     // Partitioning the array
     for (int j = low; j <= high - 1; j++) {
         if (arr[j] < pivot) {
             i++;
-            swap(arr[i], arr[j]);
+            swap(arr[i], arr[j]); // Swap elements
         }
     }
-    swap(arr[i + 1], arr[high]);
+    swap(arr[i + 1], arr[high]); // Swap elements
     return (i + 1); // Return the pivot index
 }
 
@@ -26,14 +27,13 @@ void quickSort(vector<int> &arr, int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
 
-        // Recursively sort elements before and after partition
         quickSort(arr, low, pi - 1);
         quickSort(arr, pi + 1, high);
     }
 }
 
 int main() {
-    int n = 1000000; // Size of the array
+    int n = 10000; // Size of the array
     vector<int> arr(n); // Declare and initialize the vector
 
     // Fill the array with random values
@@ -46,10 +46,4 @@ int main() {
     quickSort(arr, 0, n - 1); // Perform QuickSort
 
     auto stop = high_resolution_clock::now(); // Stop the timer
-    auto duration = duration_cast<microseconds>(stop - start); // Calculate the execution time
-
-    // Output the sequential execution time
-    cout << "Sequential Execution Time: " << duration.count() << " microseconds" << endl;
-
-    return 0;
-}
+    auto duration = duration_cast<microseconds>(stop - start); // Calculate
