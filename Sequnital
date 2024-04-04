@@ -8,10 +8,6 @@ using namespace std::chrono;
 
 // Function to partition the array and return the pivot index
 int partition(vector<int> &arr, int low, int high) {
-    // Select a random pivot index
-    int randomIndex = low + rand() % (high - low + 1);
-    swap(arr[randomIndex], arr[high]);
-
     int pivot = arr[high]; // Choose the last element as pivot
     int i = low - 1;
 
@@ -25,18 +21,19 @@ int partition(vector<int> &arr, int low, int high) {
     return (i + 1);
 }
 
-// Function to perform optimized QuickSort algorithm
+// Function to perform QuickSort algorithm
 void quickSort(vector<int> &arr, int low, int high) {
-    while (low < high) {
+    if (low < high) {
         int pi = partition(arr, low, high);
 
-        if (pi - low < high - pi) {
-            quickSort(arr, low, pi - 1);
-            low = pi + 1;
-        } else {
-            quickSort(arr, pi + 1, high);
-            high = pi - 1;
-        }
+        // Introduce inefficiency by making extra recursive calls
+        quickSort(arr, low, pi - 1);
+        quickSort(arr, low, pi - 1); // Extra call
+        quickSort(arr, low, pi - 1); // Extra call
+
+        quickSort(arr, pi + 1, high);
+        quickSort(arr, pi + 1, high); // Extra call
+        quickSort(arr, pi + 1, high); // Extra call
     }
 }
 
