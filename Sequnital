@@ -1,34 +1,42 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
+#include <cstdlib>
 
 using namespace std;
 using namespace std::chrono;
 
 // Function to partition the array and return the pivot index
 int partition(vector<int> &arr, int low, int high) {
-    int mid = low + (high - low) / 2; // Calculate the middle index
-    int pivot = arr[mid]; // Choose the middle element as pivot
+    // Select a random pivot index
+    int randomIndex = low + rand() % (high - low + 1);
+    swap(arr[randomIndex], arr[high]);
+
+    int pivot = arr[high]; // Choose the last element as pivot
     int i = low - 1;
 
-    // Partitioning the array
     for (int j = low; j <= high - 1; j++) {
         if (arr[j] < pivot) {
             i++;
-            swap(arr[i], arr[j]); // Swap elements
+            swap(arr[i], arr[j]);
         }
     }
-    swap(arr[i + 1], arr[high]); // Swap elements
-    return (i + 1); // Return the pivot index
+    swap(arr[i + 1], arr[high]);
+    return (i + 1);
 }
 
-// Function to perform QuickSort algorithm
+// Function to perform optimized QuickSort algorithm
 void quickSort(vector<int> &arr, int low, int high) {
-    if (low < high) {
+    while (low < high) {
         int pi = partition(arr, low, high);
 
-        quickSort(arr, low, pi - 1);
-        quickSort(arr, pi + 1, high);
+        if (pi - low < high - pi) {
+            quickSort(arr, low, pi - 1);
+            low = pi + 1;
+        } else {
+            quickSort(arr, pi + 1, high);
+            high = pi - 1;
+        }
     }
 }
 
@@ -46,4 +54,10 @@ int main() {
     quickSort(arr, 0, n - 1); // Perform QuickSort
 
     auto stop = high_resolution_clock::now(); // Stop the timer
-    auto duration = duration_cast<microseconds>(stop - start); // Calculate
+    auto duration = duration_cast<microseconds>(stop - start); // Calculate the execution time
+
+    // Output the sequential execution time
+    cout << "Sequential Execution Time: " << duration.count() << " microseconds" << endl;
+
+    return 0;
+}
