@@ -2,15 +2,13 @@
 #include <vector>
 #include <chrono>
 #include <cstdlib>
-
 using namespace std;
 using namespace std::chrono;
-
-// Function to partition the array and return the pivot index
 int partition(vector<int> &arr, int low, int high) {
-    int pivot = arr[high]; // Choose the last element as pivot
+    int mid = low + (high - low) / 2; 
+    swap(arr[mid], arr[high]);
+    int pivot = arr[high]; 
     int i = low - 1;
-
     for (int j = low; j <= high - 1; j++) {
         if (arr[j] < pivot) {
             i++;
@@ -20,41 +18,23 @@ int partition(vector<int> &arr, int low, int high) {
     swap(arr[i + 1], arr[high]);
     return (i + 1);
 }
-
-// Function to perform QuickSort algorithm
 void quickSort(vector<int> &arr, int low, int high) {
     if (low < high) {
         int pi = partition(arr, low, high);
-
-        // Introduce inefficiency by making extra recursive calls
         quickSort(arr, low, pi - 1);
-        quickSort(arr, low, pi - 1); // Extra call
-        quickSort(arr, low, pi - 1); // Extra call
-
         quickSort(arr, pi + 1, high);
-        quickSort(arr, pi + 1, high); // Extra call
-        quickSort(arr, pi + 1, high); // Extra call
     }
 }
-
 int main() {
     int n = 10000; // Size of the array
-    vector<int> arr(n); // Declare and initialize the vector
-
-    // Fill the array with random values
+    vector<int> arr(n); 
     for (int i = 0; i < n; i++) {
         arr[i] = rand() % n;
     }
-
     auto start = high_resolution_clock::now(); // Start the timer
-
     quickSort(arr, 0, n - 1); // Perform QuickSort
-
     auto stop = high_resolution_clock::now(); // Stop the timer
-    auto duration = duration_cast<microseconds>(stop - start); // Calculate the execution time
-
-    // Output the sequential execution time
+    auto duration = duration_cast<microseconds>(stop - start); 
     cout << "Sequential Execution Time: " << duration.count() << " microseconds" << endl;
-
     return 0;
 }
